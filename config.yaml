@@ -6,7 +6,7 @@ download_path: '/en/download-zone-data/'
 zone_data_path: 'zonedata'
 # When you update this token with your own it will break the unit test
 # you just need to update the api token used in the unit test found in tests.py
-api_token: ''
+api_token: 'REPLACE_WITH_API_KEY'
 # zones to download
 tlds:
   bid: '723'

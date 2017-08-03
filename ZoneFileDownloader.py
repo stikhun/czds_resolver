@@ -34,3 +34,18 @@ class ZoneFileDownloader(object):
                 print yaml_error
         self.logger.debug("Config data {}".format(self.config_data))
         return self.config_data
+
+    def build_download_urls(self):
+        """Creates the URLs required to download each zone file"""
+        tlds = self.config_data.get("tlds")
+        self.logger.debug("TLDs {}".format(tlds))
+        self.logger.debug("# TLDs {}".format(len(tlds)))
+        self.download_urls = {}
+        # tld, code api expects
+        for key, value in tlds.items():
+            self.logger.debug("TLD:CODE {0}:{1}".format(key, value))
+            # base url + download path + tld code + api token
+            self.download_urls[key] = "{0}{1}{2}?token={3}".format(self.config_data.get("base_url"),
+                                                                   self.config_data.get("download_path"), value,
+                                                                   self.config_data.get("api_token"))
+            self.logger.debug("built url {}".format(self.download_urls))
