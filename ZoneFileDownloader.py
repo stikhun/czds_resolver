@@ -62,7 +62,7 @@ class ZoneFileDownloader(object):
         """
         self.zone_data = {}
         for key, value in self.download_urls.items():
-            self.logger.debug("Requesting data for {} TLD".format(key))
+            self.logger.debug("Downloading data for {} TLD".format(key))
             try:
                 response = requests.get(value)
                 if response.ok:
