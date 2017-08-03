@@ -1,0 +1,13 @@
+# API endpoint
+base_url: 'https://czdap.icann.org'
+# API call
+download_path: '/en/download-zone-data/'
+# Where to store downloaded zone files
+zone_data_path: 'zonedata'
+# When you update this token with your own it will break the unit test
+# you just need to update the api token used in the unit test found in tests.py
+api_token: ''
+# zones to download
+tlds:
+  bid: '723'
+  zone: '469'
