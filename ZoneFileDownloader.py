@@ -1,3 +1,4 @@
+import gzip
 import logging
 import os
 
@@ -83,3 +84,19 @@ class ZoneFileDownloader(object):
             with open(self.filenames_compressed[key], "wb") as file_handle:
                 file_handle.write(value)
         return self.filenames_compressed
+
+    def extract_zone_files(self):
+        "Extracts the contents of each gzipped file and writes the decompressed data back to disk"
+        self.filenames_decompressed = {}
+        for key, value in self.filenames_compressed.items():
+            file_handle_in = gzip.open(value)
+            self.filenames_decompressed[key] = os.path.join("zonedata", "{}.txt".format(key))
+            with open(self.filenames_decompressed[key], "wb") as file_handle_out:
+                file_handle_out.write(file_handle_in.read())
+            file_handle_in.close()
+        return self.filenames_decompressed
+
+    def remove_compressed_files(self):
+        "Removes the gzipped file for each zone"
+        for value in self.filenames_compressed.values():
+            os.remove(value)
