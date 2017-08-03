@@ -1,6 +1,9 @@
 import logging
+import os
 
+import requests
 import yaml
+from requests import ConnectionError, Timeout
 from yaml import YAMLError
 
 
@@ -49,3 +52,34 @@ class ZoneFileDownloader(object):
                                                                    self.config_data.get("download_path"), value,
                                                                    self.config_data.get("api_token"))
             self.logger.debug("built url {}".format(self.download_urls))
+
+    def download_zone_files(self):
+        """Downloads each zone file specified in the config file, the buffered is stored
+        in a key:value dictionary so the data can be associated with the zone it is for
+
+        Each zone file provided by the API is gzipped
+        """
+        self.zone_data = {}
+        for key, value in self.download_urls.items():
+            self.logger.debug("Requesting data for {} TLD".format(key))
+            try:
+                response = requests.get(value)
+                if response.ok:
+                    self.logger.debug("Downloaded {} zone data".format(key))
+                    self.zone_data[key] = response.content
+                else:
+                    self.logger.debug("Got {} response while downloading {} zone data", response.status_code, key)
+            except ConnectionError as connection_error:
+                self.logger.error("Requests connection error {}".format(connection_error.errno))
+            except Timeout as timeout:
+                self.logger.error("Requests timeout {}".format(timeout.errno))
+        return self.zone_data
+
+    def write_zone_files(self):
+        "Writes the gzipped files to disk storing their paths and zone name in a dict"
+        self.filenames_compressed = {}
+        for key, value in self.zone_data.items():
+            self.filenames_compressed[key] = (os.path.join("zonedata", "{}.txt.gz".format(key)))
+            with open(self.filenames_compressed[key], "wb") as file_handle:
+                file_handle.write(value)
+        return self.filenames_compressed
