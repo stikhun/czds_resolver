@@ -34,7 +34,6 @@ def main():
     else:
         logger = logging.setup_custom_logger("root")
 
-    # Download zone files and extract them
     if arguments.config:
         zone_downloader = ZoneFileDownloader(config_path=arguments.config)
     else:
@@ -42,13 +41,11 @@ def main():
     zone_downloader.build_download_urls()
     zone_downloader.download_zone_files()
     zone_downloader.write_zone_files()
-    # Get paths to extracted zone files
     zone_file_paths = zone_downloader.extract_zone_files()
     zone_downloader.remove_compressed_files()
 
     config_data = zone_downloader.get_config_data()
     zone_preprocessor = PreProcessZoneFile(config_data)
-    # Read dirty zone data files
     zone_file_data = zone_preprocessor.read_zone_files(zone_file_paths)
     extracted_zone_data = zone_preprocessor.clean_zone_files(zone_file_data)
     cleaned_zone_data = zone_preprocessor.sort_uniq_zone_data(extracted_zone_data)
