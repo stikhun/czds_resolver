@@ -9,5 +9,5 @@ zone_data_path: 'zonedata'
 api_token: 'REPLACE_WITH_API_KEY'
 # zones to download
 tlds:
-  bid: '723'
-  zone: '469'
+  game: '2601'
+  auto: '2381'

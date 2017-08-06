@@ -1,0 +1,2 @@
+class DomainResolver(object):
+    pass

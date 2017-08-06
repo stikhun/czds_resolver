@@ -39,6 +39,9 @@ class ZoneFileDownloader(object):
         self.logger.debug("Config data {}".format(self.config_data))
         return self.config_data
 
+    def get_config_data(self):
+        return self.config_data
+
     def build_download_urls(self):
         """Creates the URLs required to download each zone file"""
         tlds = self.config_data.get("tlds")
@@ -62,14 +65,14 @@ class ZoneFileDownloader(object):
         """
         self.zone_data = {}
         for key, value in self.download_urls.items():
-            self.logger.debug("Downloading data for {} TLD".format(key))
+            self.logger.info("Downloading data for {} TLD".format(key))
             try:
                 response = requests.get(value)
                 if response.ok:
-                    self.logger.debug("Downloaded {} zone data".format(key))
+                    self.logger.info("Downloaded {} zone file".format(key))
                     self.zone_data[key] = response.content
                 else:
-                    self.logger.debug("Got {} response while downloading {} zone data", response.status_code, key)
+                    self.logger.error("Got {} response while downloading {} zone data", response.status_code, key)
             except ConnectionError as connection_error:
                 self.logger.error("Requests connection error {}".format(connection_error.errno))
             except Timeout as timeout:
@@ -86,7 +89,12 @@ class ZoneFileDownloader(object):
         return self.filenames_compressed
 
     def extract_zone_files(self):
-        "Extracts the contents of each gzipped file and writes the decompressed data back to disk"
+        """Extracts the contents of each gzipped file and writes the decompressed
+        data back to disk
+
+        Returns:
+        self.filenames_decompressed containing the paths to extracted zone files (dictonary)
+        """
         self.filenames_decompressed = {}
         for key, value in self.filenames_compressed.items():
             file_handle_in = gzip.open(value)

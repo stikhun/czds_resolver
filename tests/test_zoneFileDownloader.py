@@ -8,7 +8,7 @@ from ZoneFileDownloader import ZoneFileDownloader
 
 class TestZoneFileDownloader(TestCase):
     def setUp(self):
-        self.config_data = {'download_path': '/en/download-zone-data/', 'tlds': {'bid': '723', 'zone': '469'},
+        self.config_data = {'download_path': '/en/download-zone-data/', 'tlds': {'game': '2601', 'auto': '2381'},
                             'base_url': 'https://czdap.icann.org', 'zone_data_path': 'zonedata',
                             'api_token': 'REPLACE_WITH_API_KEY'}
 

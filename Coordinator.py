@@ -1,6 +1,7 @@
 import argparse
 
 import Log as logging
+from PreProcessZoneFile import PreProcessZoneFile
 from ZoneFileDownloader import ZoneFileDownloader
 
 
@@ -22,6 +23,10 @@ def main():
         "--timeout", action="store",
         help="Timeout to use for DNS requests"
     )
+    argument_parser.add_argument(
+        "--clean", action="store_true",
+        help="Format and sort zone files"
+    )
     arguments = argument_parser.parse_args()
 
     if arguments.debug:
@@ -37,9 +42,20 @@ def main():
     zone_downloader.build_download_urls()
     zone_downloader.download_zone_files()
     zone_downloader.write_zone_files()
-    zone_downloader.extract_zone_files()
+    # Get paths to extracted zone files
+    zone_file_paths = zone_downloader.extract_zone_files()
     zone_downloader.remove_compressed_files()
 
+    config_data = zone_downloader.get_config_data()
+    zone_preprocessor = PreProcessZoneFile(config_data)
+    # Read dirty zone data files
+    zone_file_data = zone_preprocessor.read_zone_files(zone_file_paths)
+    extracted_zone_data = zone_preprocessor.clean_zone_files(zone_file_data)
+    cleaned_zone_data = zone_preprocessor.sort_uniq_zone_data(extracted_zone_data)
+    zone_preprocessor.write_clean_zones_to_disk(cleaned_zone_data)
+    if arguments.clean:
+        logger.info("Finished cleaning")
+        exit(0)
 
 
 if __name__ == "__main__":
