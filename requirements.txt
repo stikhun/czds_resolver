@@ -1,11 +1,6 @@
-BeautifulSoup==3.2.1
-beautifulsoup4==4.6.0
-bs4==0.0.1
 certifi==2017.4.17
 chardet==3.0.4
-Django==1.11.2
 dnspython==1.15.0
-feedparser==5.2.1
 funcsigs==1.0.2
 gevent==1.2.2
 greenlet==0.4.12
