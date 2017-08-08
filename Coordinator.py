@@ -1,6 +1,7 @@
 import argparse
 
 import Log as logging
+from DomainResolver import DomainResolver
 from PreProcessZoneFile import PreProcessZoneFile
 from ZoneFileDownloader import ZoneFileDownloader
 
@@ -17,10 +18,12 @@ def main():
     )
     argument_parser.add_argument(
         "--threads", action="store",
+        type=int,
         help="Number of threads to use for resolving domains"
     )
     argument_parser.add_argument(
         "--timeout", action="store",
+        type=int,
         help="Timeout to use for DNS requests"
     )
     argument_parser.add_argument(
@@ -53,6 +56,9 @@ def main():
     if arguments.clean:
         logger.info("Finished cleaning")
         exit(0)
+
+    domain_resolver = DomainResolver(config_data, threads=arguments.threads, timeout=arguments.timeout)
+    domain_resolver.resolve_domains(cleaned_zone_data)
 
 
 if __name__ == "__main__":
